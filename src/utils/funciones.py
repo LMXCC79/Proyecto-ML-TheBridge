@@ -65,3 +65,38 @@ def apply_onehot_encoder(train:pd.DataFrame, columns_to_encode:list, test:pd.Dat
         return df_concatenated, df_to_transform_concatenated
 
     return df_concatenated
+
+from scipy.stats import norm
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+def graficar_histograma_y_evaluar_normalidad_visual(df):
+    
+    columnas_numericas = df.select_dtypes(include=[np.number]).columns
+
+    #Configurar el tamaño de la columna
+    num_col = len(columnas_numericas)
+    plt.figure(figsize=(15, 5*num_col))
+
+    #Iterar sobre las columnas numericas
+    for i, columna in enumerate(columnas_numericas, 1):
+        plt.subplot(num_col, 1, i)
+        data = df[columna].dropna() #Excluir los NAN de la prueba de normalidad
+
+        #Graficar Histograma y curva Normal
+        sns.histplot(data, kde=True, stat='density')
+        mu, std = norm.fit(data)
+        xmin, xmax = plt.xlim()
+        x = np.linspace(xmin, xmax, 100)
+        p = norm.pdf(x, mu, std)
+        plt.plot(x, p, 'k', linewidth = 2)
+
+        #Interpretacion visual
+        if p.max() > 0.1: #Un umbral de ejemplo que podrias ajustar
+            plt.title(f'{columna} - Distribucion visualmente cercana a la normal')
+        else:
+            plt.title(f'{columna} - Distribucion visualmente no normal')
+
+    #plt.tigth_layout()
+    plt.show()
