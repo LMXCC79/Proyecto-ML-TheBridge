@@ -45,7 +45,7 @@ def apply_onehot_encoder(train:pd.DataFrame, columns_to_encode:list, test:pd.Dat
     train = train.reset_index(drop=True)
     
     # Crear el OneHotEncoder
-    encoder = OneHotEncoder(sparse=False, handle_unknown='ignore')
+    encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
 
     # Ajustar y transformar las columnas seleccionadas
     transformed_data = encoder.fit_transform(train[columns_to_encode])
