@@ -100,3 +100,30 @@ def graficar_histograma_y_evaluar_normalidad_visual(df):
 
     #plt.tigth_layout()
     plt.show()
+
+
+from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet
+from sklearn.svm import SVR
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import make_scorer, mean_squared_error
+
+def evaluate_models(models, X, y, cv_folds=5):
+    resultados = {}
+
+    # Definir la métrica MSE como negativa (ya que cross_val_score maximiza)
+    mse_scorer = make_scorer(mean_squared_error, greater_is_better=False)
+
+    for nombre_modelo, modelo in models.items():
+        # Realizar validación cruzada con la métrica R²
+        r2_scores = cross_val_score(modelo, X, y, cv=cv_folds, scoring="r2")
+        mse_scores = cross_val_score(modelo, X, y, cv=cv_folds, scoring=mse_scorer)
+
+        # Almacenar resultados en el diccionario con más detalles
+        resultados[nombre_modelo] = {
+            "R2_mean": np.mean(r2_scores),
+            "R2_std": np.std(r2_scores),
+            "MSE_mean": -np.mean(mse_scores),  # Convertir a positivo para interpretación
+            "MSE_std": np.std(mse_scores)
+        }
+
+    return resultados
