@@ -107,7 +107,7 @@ from sklearn.svm import SVR
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import make_scorer, mean_squared_error
 
-def evaluate_models(models, X, y, cv_folds=5):
+def evaluate_models(models, X, y, cv_folds=10):
     resultados = {}
 
     # Definir la métrica MSE como negativa (ya que cross_val_score maximiza)
